@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
         notNull: {
           msg: '"Title" is required',
         },
+        notEmpty: {
+          msg: '"Title" is required'
+        },
       },
     },
     author: {
@@ -21,6 +24,9 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notNull: {
           msg: '"Author" is required',
+        },
+        notEmpty: {
+          msg: '"Author" is required'
         },
       },
     },
