@@ -9,25 +9,6 @@ var usersRouter = require('./routes/users');
 
 const { sequelize } = require('./models/index.js');
 
-// connecting to db
-// (async () => {
-//   try {
-//     await sequelize.authenticate();
-//     console.log('Connection to the database successful!');
-//   } catch (error) {
-//     console.error('Error connecting to the database: ', error);
-//   }
-// })();
-
-// sync model to db
-(async () => {
-  try {
-    await sequelize.sync({ force: true });
-  } catch (error) {
-    console.error("Error connecting to the database: ", error);
-  }
-});
-
 var app = express();
 
 // view engine setup

@@ -16,9 +16,7 @@ function asyncHandler(cb) {
 
 /* GET home page. */
 router.get('/', asyncHandler( async (req, res, next) => {
-  // Testing Book model and communication with the db
-  // const books = await Book.findAll();
-  // res.json(books);
+  
 }));
 
 module.exports = router;
