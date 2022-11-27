@@ -29,7 +29,7 @@ router.get("/new", (req, res) => {
 router.post("/new", asyncHandler(async (req, res) => {
   let book;
   try {
-    book = await Article.create(req.body);
+    book = await Book.create(req.body);
     res.redirect("/" + book.id);
   } catch (error) {
     if (error.name === "SequelizeValidationError") {
