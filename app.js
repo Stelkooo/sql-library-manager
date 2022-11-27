@@ -31,15 +31,15 @@ app.use((req, res, next) => {
   res.render("page-not-found", { title: "Page Not Found", err });
 });
 
-// error handler
+// global error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  err.status = err.status ? err.status : 500;
+  err.message = "Sorry! There was an unexpected error on the server.";
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  console.log(err.status, err.message);
+
+  res.status(err.status);
+  res.render("error", { title: "Page Not Found", err });
 });
 
 module.exports = app;
