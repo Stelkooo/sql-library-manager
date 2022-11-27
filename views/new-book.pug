@@ -3,6 +3,7 @@ extends layout
 block content
     h1 New Book
     form(action="/books/new" method="post")
+        include form-error
         include form
         p
             input(type="submit" value="Create New Book")
