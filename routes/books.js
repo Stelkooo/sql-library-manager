@@ -41,4 +41,14 @@ router.post("/new", asyncHandler(async (req, res) => {
   }
 }));
 
+/* Show book detail form */
+router.get("/:id", asyncHandler(async (req, res) => {
+  const book = await Book.findByPk(req.params.id);
+  if (book) {
+    res.render("update-book", { book, title: "A Brief History of Time" });
+  } else {
+    res.sendStatus(404);
+  }
+}));
+
 module.exports = router;
