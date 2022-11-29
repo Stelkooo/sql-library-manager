@@ -1,2 +1,2 @@
-form(action="#", method="get")
-    input(type="search" placeholder="Search...")
+form
+    input(type="search" placeholder="Search..." oninput=emitter.emit("searchInput", ))

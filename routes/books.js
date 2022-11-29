@@ -14,10 +14,18 @@ const asyncHandler = (cb) => {
   }
 };
 
+/* Search bar function */
+const EventEmitter = require('events');
+const emitter = new EventEmitter();
+
+emitter.on("searchInput", (inputValue) => {
+  console.log(inputValue);
+});
+
 /* GET books listing. */
 router.get('/', asyncHandler(async (req, res) => {
   const books = await Book.findAll({ order: [["id", "ASC"]] });
-  res.render("index", { books, title: "Books" });
+  res.render("index", { books, title: "Books", emitter });
 }));
 
 /* Create a new book form */
