@@ -6,6 +6,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var booksRouter = require('./routes/books');
+const { ERROR } = require('sqlite3');
 
 var app = express();
 
@@ -34,7 +35,7 @@ app.use((req, res, next) => {
 // global error handler
 app.use((err, req, res, next) => {
   err.status = err.status ? err.status : 500;
-  err.message = "Sorry! There was an unexpected error on the server.";
+  err.message = err.message ? err.message : "Sorry! There was an unexpected error on the server.";
 
   console.log(err.status, err.message);
 

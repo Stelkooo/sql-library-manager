@@ -19,13 +19,39 @@ const EventEmitter = require('events');
 const emitter = new EventEmitter();
 
 emitter.on("searchInput", (inputValue) => {
-  console.log(inputValue);
+  // console.log(inputValue);
 });
 
 /* GET books listing. */
-router.get('/', asyncHandler(async (req, res) => {
-  const books = await Book.findAll({ order: [["id", "ASC"]] });
-  res.render("index", { books, title: "Books", emitter });
+router.get('/', asyncHandler(async (req, res, next) => {
+  // const books = await Book.findAll({ order: [["id", "ASC"]] });
+  const pageQuery = Number.parseInt(req.query.page);
+  
+  let page = 0;
+  if (!Number.isNaN(pageQuery) && pageQuery > 0) {
+    page = pageQuery;
+  }
+
+  const sizeLimit = 10;
+  const books = await Book.findAndCountAll({
+    limit: sizeLimit,
+    offset: page * sizeLimit
+  });
+
+  const totalPages = Math.ceil(books.count / sizeLimit);
+
+  if (page >= totalPages) {
+    const err = new Error();
+    err.status = 404;
+    err.message = "Page number exceeds the total number of pages";
+    next(err);
+  } else {
+    const pagination = {
+      totalPages,
+      page: page
+    };
+    res.render("index", { books : books.rows, title: "Books", pagination, emitter });
+  }
 }));
 
 /* Create a new book form */
@@ -38,7 +64,7 @@ router.post("/new", asyncHandler(async (req, res) => {
   let book;
   try {
     book = await Book.create(req.body);
-    res.redirect(book.id);
+    res.redirect("/");
   } catch (error) {
     if (error.name === "SequelizeValidationError") {
       book = await Book.build(req.body);

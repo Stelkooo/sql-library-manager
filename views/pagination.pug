@@ -1,0 +1,7 @@
+.pagination
+    .pagination-list
+        - for (var i = 0; i < pagination.totalPages; i++)
+            if (i === pagination.page)
+                a(href=`/books?page=${i}`).button.active= i
+            else
+                a(href=`/books?page=${i}`).button= i
