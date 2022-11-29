@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 const Book = require("../models").Book;
+const { Op } = require('sequelize');
+
+const sizeLimit = 10;
 
 /* Handler function to wrap each route. */
 const asyncHandler = (cb) => {
@@ -32,7 +35,6 @@ router.get('/', asyncHandler(async (req, res, next) => {
     page = pageQuery;
   }
 
-  const sizeLimit = 10;
   const books = await Book.findAndCountAll({
     limit: sizeLimit,
     offset: page * sizeLimit
@@ -43,7 +45,60 @@ router.get('/', asyncHandler(async (req, res, next) => {
   if (page >= totalPages) {
     const err = new Error();
     err.status = 404;
-    err.message = "Page number exceeds the total number of pages";
+    err.message = "Page number does not exist";
+    next(err);
+  } else {
+    const pagination = {
+      totalPages,
+      page: page
+    };
+    res.render("index", { books : books.rows, title: "Books", pagination, emitter });
+  }
+}));
+
+router.post("/", asyncHandler(async (req, res, next) => {
+  const pageQuery = Number.parseInt(req.query.page);
+  const { search } = req.body;
+  let page = 0;
+  if (!Number.isNaN(pageQuery) && pageQuery > 0) {
+    page = pageQuery;
+  }
+  const books = await Book.findAndCountAll({
+    where: {
+      [Op.or]: {
+        title: {
+          [Op.like]: `%${search}%`
+        },
+        author: {
+          [Op.like]: `%${search}%`
+        },
+        genre: {
+          [Op.like]: `%${search}%`
+        },
+        year: {
+          [Op.like]: `%${search}%`
+        }
+      }
+    },
+    limit: sizeLimit,
+    offset: page * sizeLimit
+  });
+
+  console.log(books.count);
+
+  if (books.count === 0) {
+    const err = new Error();
+    err.status = 404;
+    err.message = "No search results found";
+    next(err);
+  }
+
+  const totalPages = Math.ceil(books.count / sizeLimit);
+
+  if (page >= totalPages) {
+    const err = new Error();
+    err.status = 404;
+    err.message = "Page number does not exist";
     next(err);
   } else {
     const pagination = {
