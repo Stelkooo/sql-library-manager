@@ -50,7 +50,6 @@ router.get(
         books: books.rows,
         title: "Books",
         pagination,
-        emitter,
       });
     }
   })
@@ -111,7 +110,6 @@ router.post(
         books: books.rows,
         title: "Books",
         pagination,
-        emitter,
       });
     }
   })
