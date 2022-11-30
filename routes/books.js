@@ -153,7 +153,10 @@ router.get(
     if (book) {
       res.render("update-book", { book, title: book.title });
     } else {
-      res.sendStatus(404);
+      const err = new Error();
+      err.status = 404;
+      err.message = "Book ID not found";
+      next(err);
     }
   })
 );
@@ -169,7 +172,10 @@ router.post(
         await book.update(req.body);
         res.redirect("/");
       } else {
-        res.sendStatus(404);
+        const err = new Error();
+        err.status = 404;
+        err.message = "Book ID not found";
+        next(err);
       }
     } catch (error) {
       if (error.name === "SequelizeValidationError") {
@@ -196,7 +202,10 @@ router.post(
       await book.destroy();
       res.redirect("/");
     } else {
-      res.sendStatus(404);
+      const err = new Error();
+      err.status = 404;
+      err.message = "Book ID not found";
+      next(err);
     }
   })
 );
