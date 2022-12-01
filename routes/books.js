@@ -21,12 +21,11 @@ const asyncHandler = (cb) => {
 router.get(
   "/",
   asyncHandler(async (req, res, next) => {
-    // const books = await Book.findAll({ order: [["id", "ASC"]] });
     const pageQuery = Number.parseInt(req.query.page);
 
     let page = 0;
     if (!Number.isNaN(pageQuery) && pageQuery > 0) {
-      page = pageQuery;
+      page = pageQuery - 1;
     }
 
     const books = await Book.findAndCountAll({
@@ -44,7 +43,7 @@ router.get(
     } else {
       const pagination = {
         totalPages,
-        page: page,
+        page: page + 1,
       };
       res.render("index", {
         books: books.rows,
@@ -110,6 +109,7 @@ router.post(
         books: books.rows,
         title: "Books",
         pagination,
+        search,
       });
     }
   })

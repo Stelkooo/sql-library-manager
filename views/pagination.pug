@@ -1,7 +1,7 @@
 .pagination
     .pagination-list
         - for (var i = 0; i < pagination.totalPages; i++)
-            if (i === pagination.page)
-                a(href=`/books?page=${i}`).button.active= i
+            if (i === pagination.page - 1)
+                a(href=`/books?page=${i + 1}`).button.active= i + 1
             else
-                a(href=`/books?page=${i}`).button= i
+                a(href=`/books?page=${i + 1}`).button= i + 1
