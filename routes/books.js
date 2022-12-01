@@ -119,7 +119,7 @@ router.get(
       const err = new Error();
       err.status = 404;
       err.message = "Book ID not found";
-      next(err);
+      res.render("page-not-found", { title: "Page Not Found", err });
     }
   })
 );
@@ -138,7 +138,7 @@ router.post(
         const err = new Error();
         err.status = 404;
         err.message = "Book ID not found";
-        next(err);
+        res.render("page-not-found", { title: "Page Not Found", err });
       }
     } catch (error) {
       if (error.name === "SequelizeValidationError") {
@@ -168,7 +168,7 @@ router.post(
       const err = new Error();
       err.status = 404;
       err.message = "Book ID not found";
-      next(err);
+      res.render("page-not-found", { title: "Page Not Found", err });
     }
   })
 );
