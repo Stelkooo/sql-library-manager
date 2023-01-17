@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const bodyParser = require('body-parser');
+const { sequelize } = require('./models');
 
 var indexRouter = require('./routes/index');
 var booksRouter = require('./routes/books');
@@ -32,18 +33,39 @@ app.use((req, res, next) => {
   const err = new Error();
   err.statusCode = 404;
   err.message = "Hmm... that page doesn't seem to exist :/";
-  res.render("page-not-found", { title: "Page Not Found", err });
+  res.render('page-not-found', { title: 'Page Not Found', err });
 });
 
 // global error handler
 app.use((err, req, res, next) => {
   err.status = err.status ? err.status : 500;
-  err.message = err.message ? err.message : "Sorry! There was an unexpected error on the server.";
+  err.message = err.message
+    ? err.message
+    : 'Sorry! There was an unexpected error on the server.';
 
   console.log(err.status, err.message);
 
   res.status(err.status);
-  res.render("error", { title: "Page Not Found", err });
+  res.render('error', { title: 'Page Not Found', err });
+});
+
+// set our port
+app.set('port', process.env.PORT || 3000);
+
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully');
+  } catch (err) {
+    console.error(`Unable to connect to the database: ${err}`);
+  }
+})();
+
+// start listening on our port
+sequelize.sync().then(() => {
+  const server = app.listen(app.get('port'), () => {
+    console.log(`Express server is listening on port ${server.address().port}`);
+  });
 });
 
 module.exports = app;
